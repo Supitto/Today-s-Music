@@ -1,52 +1,163 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0"/>
-        <title>Today's Music</title>
-        <style>
-            body {margin: 5% auto; background: #f2f2f2; color: #444444; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 16px; line-height: 1.8; text-shadow: 0 1px 0 #ffffff; max-width: 73%;}
-            code {background: white;}
-            a {border-bottom: 1px solid #444444; color: #444444; text-decoration: none;}
-            a:hover {border-bottom: 0;}
-        </style>
-    </head>
-    <body>
-        <header>
-            <h1>Today's Music &#9836;</h1>
-            <aside></aside>
-        </header>
-        <h2><strong>The ideia</strong></h2>
-        <p>It is incredibly hard to find new music out there, the recommendations algorithms are so well-made that true option is just not there anymore. With that in my mind (and probably some grains of caffeine) I made a Spotify scrapper that extract a good amount of music on a daily basis. This allows people (mostly developers) to search by themself and find new stuff.</p>
-        
-        <h2>The datasets</h2>
-        <p>They are generated daily on this bucket. You can always find the latest one here.<br/>Just beware that since this is a backyard project, there is no standad yet and the format may vary.
-        </p>
-        <h2>Let's have some fun</h2>
-        
-        <p>If you click on the button bellow it will
-            <ol>
-                <li>Grab the latest dataset</li>
-                <li>Ask you to put some target music codes</li>
-                <li>Ask how many musics you will want on your playlist</li>
-                <li>The hamsters on your computer will do some magic (basic math really)</li>
-                <li>Badabin, badabon, a new playlist will appear on your screen</li>
-                
-            </ol><code>Beware that it make computations on your browser and on really low end machines this may cause the tab to crash</code></p>
 
-            <button>Do the fun stuff</button>
-        <h2>What we can and what we cannot do</h2>
-        <p>This project requires serverside computation, and serverside computation require me paying for it. In order of making it afordable, I'll only go as far as displaying the playlist on the screen. <br/>I have another page ready that creates the playlist on <b>your</b> spotidy account, but that will only happen if this project recieves some donations and it is able to sustain itself.</p>
-        <hr>
-        <h2>If you want to help</h2>
-        
-        <footer>
-            If you want to donate to keep this project alive, clike here<br/>
-            If you want to contribute with the project, take a look at the ToDo list<br/>
-            Made by Supitto, website template stolen from <a href="https://github.com/setetres/evenbettermotherfuckingwebsite">this repository</a>.</p>
-        </footer>
-        <script>
-            
-        </script>
-    </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0" />
+    <title>Today's Music</title>
+    <style>
+        .long {
+            width: 70%;
+
+        }
+
+        body {
+            margin: 5% auto;
+            background: #f2f2f2;
+            color: #444444;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-size: 16px;
+            line-height: 1.8;
+            text-shadow: 0 1px 0 #ffffff;
+            max-width: 73%;
+        }
+
+        code {
+            background: white;
+        }
+
+        a {
+            border-bottom: 1px solid #444444;
+            color: #444444;
+            text-decoration: none;
+        }
+
+        a:hover {
+            border-bottom: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Today's Music &#9836;</h1>
+        <aside></aside>
+    </header>
+    <h2><strong>The ideia</strong></h2>
+    <p>It is incredibly hard to find new music out there, the recommendations algorithms are so well-made that true
+        option is just not there anymore. With that in my mind (and probably some grains of caffeine) I made a Spotify
+        scrapper that extract a good amount of music on a daily basis. This allows people (mostly developers) to search
+        by themself and find new stuff.</p>
+
+    <h2>The datasets</h2>
+    <p>They are generated daily on this bucket. You can always find the latest one here.<br />Just beware that since
+        this is a backyard project, there is no standad yet and the format may vary.
+    </p>
+    <h2>Let's have some fun</h2>
+
+    <p>If you click on the button bellow it will
+    <ol>
+        <li>Grab the latest dataset</li>
+        <li>Ask you to put some target music codes</li>
+        <li>Ask how many musics you will want on your playlist</li>
+        <li>The hamsters on your computer will do some magic (basic math really)</li>
+        <li>Badabin, badabon, a new playlist will appear on your screen</li>
+
+    </ol>
+    <code>Beware that it make computations on your browser and on really low end machines this may cause the tab to crash</code>
+    </p>
+
+    <button onclick="fun()">Do the fun stuff</button>
+
+    <div id="fun" style="display:none">
+        <h2>The fun</h2>
+        <p2>What do you want to input?</p2><br />
+        <button onclick="with_playlist()">I have a playlist</button> <button onclick="with_music()">I have some
+            musics</button><br><br>
+        <div id="with_playlist" style="display:none">
+            <p>Okay, then:<br />
+            <ol>
+                <li>Go to your playlist on spotify</li>
+                <li>Click on the three dots</li>
+                <li>Click in share</li>
+                <li>Copy the link</li>
+                <li>Paste the link on the box bellow</li>
+            </ol>
+            <input id="playlist_id" class="long"><button onclick="generate_based_on_playlist()">Generate my playlist</button>
+            </p>
+        </div>
+        <div id="with_music" style="display:none">
+            <p>Okay, then:<br />
+                <ol>
+                    <li>Go the music on spotify</li>
+                    <li>Click on the three dots</li>
+                    <li>Click in share</li>
+                    <li>Copy the link</li>
+                    <li>Paste the link on one of the boxes bellow</li>
+                </ol>
+                <ol>
+                    <li><input class="long" id="music_id"></li>
+                    <li><input class="long" id="music_id"></li>
+                    <li><input class="long" id="music_id"></li>
+                    <li><input class="long" id="music_id"></li>
+                    <li><input class="long" id="music_id"></li>
+                </ol>
+                <br>
+                <button onclick="generate_based_on_musics()">Generate my playlist</button>
+                </p>
+        </div>
+    </div>
+
+    <div id="your_playlist" style="display: none">
+        <h2>Yay, here is your playlist ◖ᵔᴥᵔ◗ ♪ ♫</h2>
+        <iframe src="https://open.spotify.com/embed/track/0L7MpEwFgZRP5rFdXOYaRT?utm_source=generator" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+        <br><iframe src="https://open.spotify.com/embed/track/6vWoVzkYQBuIDfUFUz5lzY?utm_source=generator" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+        <br><iframe src="https://open.spotify.com/embed/track/2ZmZJLfN2KNnQOBCOEs9wi?utm_source=generator" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+        <br><iframe src="https://open.spotify.com/embed/track/7LMd2YZowU5NCPnlxKGSxz?utm_source=generator" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+        <br><iframe src="https://open.spotify.com/embed/track/5XTJ6iMIYEU4k5xCyYzvRw?utm_source=generator" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+        <br><iframe src="https://open.spotify.com/embed/track/6EDxH7lYbplwP8E2tLwLB9?utm_source=generator" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+        <br><iframe src="https://open.spotify.com/embed/track/1yFWnZyHTKPP4hhdbHL1aF?utm_source=generator" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+        <br><iframe src="https://open.spotify.com/embed/track/4ZRsNXrNJpAJnK552Jnpis?utm_source=generator" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+        <br>
+    </div>
+    <h2>What we can and what we cannot do</h2>
+    <p>This project requires serverside computation, and serverside computation require me paying for it. In order of
+        making it afordable, I'll only go as far as displaying the playlist on the screen. <br />I have another page
+        ready that creates the playlist on <b>your</b> spotidy account, but that will only happen if this project
+        recieves some donations and it is able to sustain itself.</p>
+    <hr>
+    <h2>If you want to help</h2>
+
+    <footer>
+        If you want to donate to keep this project alive, clike here<br />
+        If you want to contribute with the project, take a look at the ToDo list<br />
+        Made by Supitto, website template stolen from <a
+            href="https://github.com/setetres/evenbettermotherfuckingwebsite">this repository</a>.</p>
+    </footer>
+    <script>
+
+        const fun = () => {
+            document.querySelector("#fun").style.display = "";
+        }
+
+        const with_playlist = () => {
+            document.querySelector("#with_playlist").style.display = "";
+            document.querySelector("#with_music").style.display = "none";
+        }
+
+        const with_music = () => {
+            document.querySelector("#with_music").style.display = "";
+            document.querySelector("#with_playlist").style.display = "none";
+        }
+
+        const generate_based_on_musics = () => {
+            document.querySelector("#your_playlist").style.display = "";
+        }
+
+        const generate_based_on_playlist = () => {
+            document.querySelector("#your_playlist").style.display = "";
+        }
+    </script>
+</body>
+
 </html>
