@@ -234,7 +234,7 @@
             } while (is_centroid_movement_small_enough(centroids, old_centroids) == false)
             let wss = calculate_wss(centroids, labeled_dataset)
             
-            return {centroids: centroids, score: score}
+            return {centroids: centroids, score: wss}
         }
 
         const calculate_wss = (centroids, labeled_dataset) => labeled_dataset.reduce((acc, val) => acc + powered_distance(val, centroids[val['label']]),0)
