@@ -268,6 +268,7 @@
             return Object.keys(groups).map((key) => groups[key].reduce((acc,val) => {
                 acc['valence'] += val['valence']/groups[key].length
                 acc['liveness'] += val['liveness']/groups[key].length
+                return acc
             },{valence:0, liveness:0, label:key}));
 
         }
