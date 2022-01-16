@@ -257,7 +257,7 @@
 
         const ajust_centroids = (dataset) => {
             groups = dataset.reduce((acc,val) => {
-                if(!(val['label'] in acc)){
+                if(val['label'] in acc){
                     acc[val['label']].push(val)
                 } else {
                     acc[val['label']] = [val]
