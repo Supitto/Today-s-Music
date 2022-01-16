@@ -239,7 +239,7 @@
                 old_centroids = copy_centroids(centroids)
                 labeled_dataset = fit(centroids,dataset)
                 centroids = ajust_centroids(labeled_dataset)
-            }while(is_centroid_movement_small_enough(centroid,old_centroids) == false)
+            }while(is_centroid_movement_small_enough(centroids,old_centroids) == false)
             return centroids
         }
 
