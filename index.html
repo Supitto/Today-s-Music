@@ -248,7 +248,9 @@
         const fit = (centroids, dataset) => {
 
             return dataset.map((tuple) => {
-                tuple['label'] = centroids.map((centroid) => powered_distance(tuple, centroid)).sort((a, b) => a['score'] - b['score'])[0]['label']
+                let tmp = centroids.map((centroid) => powered_distance(tuple, centroid))
+                let tmp2 = tmp.sort((a, b) => a['score'] - b['score'])
+                tuple['label'] = tmp2[0]['label']
                 return tuple
             })
         }
