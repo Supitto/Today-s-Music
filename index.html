@@ -173,17 +173,7 @@
             let id = document.querySelector("#playlist_id").value.split('?')[0].split('/').at(-1)
             console.log(id)
             let tracks = await fetch("https://mjmkhaspb5.execute-api.sa-east-1.amazonaws.com/return_features_from_playlist", { method: "POST", body: '{"id": "' + id + '"}' }).then(r => r.json())
-            
-
-            
-            
-                let t = train_k_means_and_return_centroids(tracks['audio_features'])
-                let centroids = t.centroids
-                let score = t.score
-
-                score_difference = score - old_score;
-            }while(score_difference)
-            
+            let centroids = find_centroids(tracks['audio_features'])
             generate_playlist(centroids, document.dataset)
         }
 
