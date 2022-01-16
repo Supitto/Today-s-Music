@@ -237,7 +237,7 @@
             centroids = generate_centroids(number_of_clusters)
             do{
                 old_centroids = copy_centroids(centroids)
-                labeled_dataset = fit(centroid,dataset)
+                labeled_dataset = fit(centroids,dataset)
                 centroids = ajust_centroids(labeled_dataset)
             }while(is_centroid_movement_small_enough(centroid,old_centroids) == false)
             return centroids
