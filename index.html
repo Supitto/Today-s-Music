@@ -168,17 +168,14 @@
             generate_playlist(centroids, document.dataset)
         }
 
-        const find_centroids = (v) => {
-
-        }
 
         async function generate_based_on_playlist() {
             let id = document.querySelector("#playlist_id").value.split('?')[0].split('/').at(-1)
             console.log(id)
             let tracks = await fetch("https://mjmkhaspb5.execute-api.sa-east-1.amazonaws.com/return_features_from_playlist", { method: "POST", body: '{"id": "' + id + '"}' }).then(r => r.json())
             console.log(tracks)
-            let centroids = find_centroids(tracks)
-            //generate_playlist(centroids, document.dataset)
+            let centroids = train_k_means_and_return_centroids(5,tracks)
+            generate_playlist(centroids, document.dataset)
         }
 
         const generate_playlist = (dataset, centroids) => {
@@ -232,6 +229,55 @@
 
         const generate_embedded = (obj) => {
             return '<iframe src="https://open.spotify.com/embed/track/' + obj['id'] + '" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe><br>'
+        }
+
+        // this is a simple kmeans implementation
+
+        const train_k_means_and_return_centroids = (number_of_clusters, dataset) => {
+            centroids = generate_centroids(number_of_clusters)
+            do{
+                old_centroids = copy_centroids(centroids)
+                labeled_dataset = fit(centroid,dataset)
+                centroids = ajust_centroids(labeled_dataset)
+            }while(is_centroid_movement_small_enough(centroid,old_centroids) == false)
+            return centroids
+        }
+
+        const generate_centroids = (n) => Array.from(Array(n).keys()).reduce((acc,val) => acc.concat({valence: Math.random(), liveness: Math.random(),label: val, id: 'dummy'}), [])
+
+        const fit = (centroids, dataset) => {
+            
+            return dataset.map((tuple) => {
+                tuple['label'] = centroids.map((centroid) => powered_distance(tuple, centroid)).sort((a, b) => a['score'] - b['score'])[0]['label']
+                return tuple
+            })
+        }
+
+        const copy_centroids = (c) => {return {valence: c['valence'], liveness: c['liveness'],label: c['label'], id:'dummy'}}
+
+        const ajust_centroids = (dataset) => {
+            groups = dataset.reduce((acc,val) => {
+                if(acc.keys.includes(val['label'])){
+                    acc[val['label']].push(val)
+                } else {
+                    acc[val['label']] = [val]
+                }
+                return acc
+            })
+
+            return Object.keys(groups).map((key) => groups[key].reduce((acc,val) => {
+                acc['valence'] += val['valence']/groups[key].length
+                acc['liveness'] += val['liveness']/groups[key].length
+            },{valence:0, liveness:0, label:key}));
+
+        }
+
+        const is_centroid_movement_small_enough = (c1, c2) => {
+            small = true
+            for (let index = 0; index < c1.length; index++) {
+                small = small && powered_distance(c1[i],c2[i]).score < 0.0025
+            }
+            return small
         }
     </script>
 </body>
