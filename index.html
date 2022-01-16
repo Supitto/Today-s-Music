@@ -83,42 +83,35 @@
                 <li>Copy the link</li>
                 <li>Paste the link on the box bellow</li>
             </ol>
-            <input id="playlist_id" class="long"><button onclick="generate_based_on_playlist()">Generate my playlist</button>
+            <input id="playlist_id" class="long"><button onclick="generate_based_on_playlist()">Generate my
+                playlist</button>
             </p>
         </div>
         <div id="with_music" style="display:none">
             <p>Okay, then:<br />
-                <ol>
-                    <li>Go the music on spotify</li>
-                    <li>Click on the three dots</li>
-                    <li>Click in share</li>
-                    <li>Copy the link</li>
-                    <li>Paste the link on one of the boxes bellow</li>
-                </ol>
-                <ol>
-                    <li><input class="long" id="music_id"></li>
-                    <li><input class="long" id="music_id"></li>
-                    <li><input class="long" id="music_id"></li>
-                    <li><input class="long" id="music_id"></li>
-                    <li><input class="long" id="music_id"></li>
-                </ol>
-                <br>
-                <button onclick="generate_based_on_musics()">Generate my playlist</button>
-                </p>
+            <ol>
+                <li>Go the music on spotify</li>
+                <li>Click on the three dots</li>
+                <li>Click in share</li>
+                <li>Copy the link</li>
+                <li>Paste the link on one of the boxes bellow</li>
+            </ol>
+            <ol>
+                <li><input class="long" id="music_id"></li>
+                <li><input class="long" id="music_id"></li>
+                <li><input class="long" id="music_id"></li>
+                <li><input class="long" id="music_id"></li>
+                <li><input class="long" id="music_id"></li>
+            </ol>
+            <br>
+            <button onclick="generate_based_on_musics()">Generate my playlist</button>
+            </p>
         </div>
     </div>
 
     <div id="your_playlist" style="display: none">
         <h2>Yay, here is your playlist ◖ᵔᴥᵔ◗ ♪ ♫</h2>
-        <iframe src="https://open.spotify.com/embed/track/0L7MpEwFgZRP5rFdXOYaRT?utm_source=generator" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
-        <br><iframe src="https://open.spotify.com/embed/track/6vWoVzkYQBuIDfUFUz5lzY?utm_source=generator" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
-        <br><iframe src="https://open.spotify.com/embed/track/2ZmZJLfN2KNnQOBCOEs9wi?utm_source=generator" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
-        <br><iframe src="https://open.spotify.com/embed/track/7LMd2YZowU5NCPnlxKGSxz?utm_source=generator" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
-        <br><iframe src="https://open.spotify.com/embed/track/5XTJ6iMIYEU4k5xCyYzvRw?utm_source=generator" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
-        <br><iframe src="https://open.spotify.com/embed/track/6EDxH7lYbplwP8E2tLwLB9?utm_source=generator" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
-        <br><iframe src="https://open.spotify.com/embed/track/1yFWnZyHTKPP4hhdbHL1aF?utm_source=generator" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
-        <br><iframe src="https://open.spotify.com/embed/track/4ZRsNXrNJpAJnK552Jnpis?utm_source=generator" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
-        <br>
+
     </div>
     <h2>What we can and what we cannot do</h2>
     <p>This project requires serverside computation, and serverside computation require me paying for it. In order of
@@ -135,9 +128,15 @@
             href="https://github.com/setetres/evenbettermotherfuckingwebsite">this repository</a>.</p>
     </footer>
     <script>
+        document.dataset = []
 
-        const fun = () => {
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function fun() {
             document.querySelector("#fun").style.display = "";
+            document.dataset = await fetch("https://todays-music.s3.sa-east-1.amazonaws.com/latest.json").then(r => r.json())
         }
 
         const with_playlist = () => {
@@ -151,11 +150,88 @@
         }
 
         const generate_based_on_musics = () => {
-            document.querySelector("#your_playlist").style.display = "";
+            let centroids = [
+                {
+                    'liveness': 0.7,
+                    'valence': 0.1
+                },
+                {
+                    'liveness': 0.1,
+                    'valence': 0.4
+                },
+                {
+                    'liveness': 1,
+                    'valence': 0
+                },
+
+            ]
+            generate_playlist(centroids, document.dataset)
         }
 
-        const generate_based_on_playlist = () => {
-            document.querySelector("#your_playlist").style.display = "";
+        const find_centroids = (v) => {
+
+        }
+
+        async function generate_based_on_playlist() {
+            let id = document.querySelector("#playlist_id").value.split('?')[0].split('/').at(-1)
+            console.log(id)
+            let tracks = await fetch("https://mjmkhaspb5.execute-api.sa-east-1.amazonaws.com/return_features_from_playlist", { method: "POST", body: '{"id": "' + id + '"}' })
+            console.log(tracks)
+            let centroids = find_centroids(tracks)
+            //generate_playlist(centroids, document.dataset)
+        }
+
+        const generate_playlist = (dataset, centroids) => {
+            d = document.querySelector("#your_playlist")
+
+            tracks = find_closest(dataset, centroids)
+            embeddeds = tracks.reduce((a, v) => a + generate_embedded(v), "")
+
+            d.innerHTML += embeddeds
+            sleep(2000)
+            d.style.display = "";
+        }
+
+        const powered_distance = (track, centroid) => {
+
+            let l = track["liveness"] - centroid["liveness"];
+            l = l * l;
+
+            let v = track["valence"] - centroid["valence"]
+            v = v * v;
+
+            return { 'id': track['id'], 'score': v + l }
+        }
+
+        const find_closest = (centroids, dataset) => {
+            let var1 = dataset.filter(v => v != null)
+            let var2 = var1.map(track => centroids.map(centroid => powered_distance(track, centroid)).sort((a, b) => a['score'] - b['score'])[0])
+            let var3 = var2.sort((a, b) => a['score'] - b['score'])
+            let var4 = var3.slice(0, 20);
+            return var4;
+        }
+
+        const test = () => {
+            let centroids = [
+                {
+                    'liveness': 0.7,
+                    'valence': 0.1
+                },
+                {
+                    'liveness': 0.1,
+                    'valence': 0.4
+                },
+                {
+                    'liveness': 1,
+                    'valence': 0
+                },
+
+            ]
+            console.log(find_closest(centroids, d))
+        }
+
+        const generate_embedded = (obj) => {
+            return '<iframe src="https://open.spotify.com/embed/track/' + obj['id'] + '" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe><br>'
         }
     </script>
 </body>
