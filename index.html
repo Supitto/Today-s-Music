@@ -173,9 +173,29 @@
             let id = document.querySelector("#playlist_id").value.split('?')[0].split('/').at(-1)
             console.log(id)
             let tracks = await fetch("https://mjmkhaspb5.execute-api.sa-east-1.amazonaws.com/return_features_from_playlist", { method: "POST", body: '{"id": "' + id + '"}' }).then(r => r.json())
-            console.log(tracks)
-            let centroids = train_k_means_and_return_centroids(5, tracks['audio_features'])
+            
+
+            
+            
+                let t = train_k_means_and_return_centroids(tracks['audio_features'])
+                let centroids = t.centroids
+                let score = t.score
+
+                score_difference = score - old_score;
+            }while(score_difference)
+            
             generate_playlist(centroids, document.dataset)
+        }
+
+        const find_centroids = (dataset) => {
+            let centroids_and_scores = Array.from(Array(n).keys()).slice(1).map((v) => train_k_means_and_return_centroids(v,dataset))
+            let max_score = centroids_and_scores[0].score
+            centroids_and_scores.reduce((acc, cur) => {
+                cur.value = cur.value / max_score
+                acc.concat(cur)
+            })
+            console.log(centroids_and_scores)
+            return centroids_and_scores[3].centroids
         }
 
         const generate_playlist = (dataset, centroids) => {
@@ -208,25 +228,6 @@
             return var4;
         }
 
-        const test = () => {
-            let centroids = [
-                {
-                    'liveness': 0.7,
-                    'valence': 0.1
-                },
-                {
-                    'liveness': 0.1,
-                    'valence': 0.4
-                },
-                {
-                    'liveness': 1,
-                    'valence': 0
-                },
-
-            ]
-            console.log(find_closest(centroids, d))
-        }
-
         const generate_embedded = (obj) => {
             return '<iframe src="https://open.spotify.com/embed/track/' + obj['id'] + '" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe><br>'
         }
@@ -240,8 +241,12 @@
                 labeled_dataset = fit(centroids, dataset)
                 centroids = ajust_centroids(labeled_dataset)
             } while (is_centroid_movement_small_enough(centroids, old_centroids) == false)
-            return centroids
+            let wss = calculate_wss(centroids, labeled_dataset)
+            
+            return {centroids: centroids, score: score}
         }
+
+        const calculate_wss = (centroids, labeled_dataset) => labeled_dataset.reduce((acc, val) => acc + powered_distance(val, centroids[val['label']]),0)
 
         const generate_centroids = (n) => Array.from(Array(n).keys()).reduce((acc, val) => acc.concat({ valence: Math.random(), liveness: Math.random(), label: val, id: 'dummy' }), [])
 
