@@ -237,7 +237,7 @@
             return {centroids: centroids, score: wss}
         }
 
-        const calculate_wss = (centroids, labeled_dataset) => labeled_dataset.reduce((acc, val) => acc + powered_distance(val, centroids[val['label']]),0)
+        const calculate_wss = (centroids, labeled_dataset) => labeled_dataset.reduce((acc, val) => acc + powered_distance(val, centroids[val['label']])['score'],0)
 
         const generate_centroids = (n) => Array.from(Array(n).keys()).reduce((acc, val) => acc.concat({ valence: Math.random(), liveness: Math.random(), label: val, id: 'dummy' }), [])
 
