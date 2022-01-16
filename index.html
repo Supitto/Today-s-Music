@@ -178,6 +178,7 @@
         }
 
         const find_centroids = (dataset) => {
+            console.log(dataset)
             let centroids_and_scores = Array.from(Array(Math.min(20, dataset.length/2) ).keys()).slice(1).map((v) => train_k_means_and_return_centroids(v,dataset))
             let max_score = centroids_and_scores[0].score
             centroids_and_scores.reduce((acc, cur) => {
