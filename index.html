@@ -174,7 +174,7 @@
             console.log(id)
             let tracks = await fetch("https://mjmkhaspb5.execute-api.sa-east-1.amazonaws.com/return_features_from_playlist", { method: "POST", body: '{"id": "' + id + '"}' }).then(r => r.json())
             console.log(tracks)
-            let centroids = train_k_means_and_return_centroids(5,tracks)
+            let centroids = train_k_means_and_return_centroids(5,tracks['audio_features'])
             generate_playlist(centroids, document.dataset)
         }
 
