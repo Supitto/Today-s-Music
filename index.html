@@ -276,7 +276,7 @@
         const is_centroid_movement_small_enough = (c1, c2) => {
             small = true
             for (let index = 0; index < c1.length; index++) {
-                small = small && powered_distance(c1[i],c2[i]).score < 0.0025
+                small = small && powered_distance(c1[index],c2[index]).score < 0.0025
             }
             return small
         }
