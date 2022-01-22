@@ -183,6 +183,7 @@
             let max_score = centroids_and_scores[0].score
             centroids_and_scores.reduce((acc, cur) => {
                 cur.value = cur.value / max_score
+                console.log(acc)
                 acc.concat(cur)
             },[])
             console.log(centroids_and_scores)
