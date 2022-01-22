@@ -239,7 +239,7 @@
 
         const calculate_wss = (centroids, labeled_dataset) => {
             cantroid_map = {}
-            centroid.forEach(element => {
+            centroids.forEach(element => {
                 centroid_map[element['label']] = element
             });
             return labeled_dataset.reduce((acc, val) => acc + powered_distance(val, centroid_map[val['label']])['score'],0)
