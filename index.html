@@ -171,23 +171,19 @@
 
         async function generate_based_on_playlist() {
             let id = document.querySelector("#playlist_id").value.split('?')[0].split('/').at(-1)
-            console.log(id)
             let tracks = await fetch("https://mjmkhaspb5.execute-api.sa-east-1.amazonaws.com/return_features_from_playlist", { method: "POST", body: '{"id": "' + id + '"}' }).then(r => r.json())
             let centroids = find_centroids(tracks['audio_features'])
             generate_playlist(centroids, document.dataset)
         }
 
         const find_centroids = (dataset) => {
-            console.log(dataset)
-            let centroids_and_scores = Array.from(Array(Math.ceil(Math.min(20, dataset.length/2)) ).keys()).slice(2).map((v) => train_k_means_and_return_centroids(v,dataset))
+            let centroids_and_scores = Array.from(Array(Math.ceil(Math.min(20, dataset.length / 2))).keys()).slice(2).map((v) => train_k_means_and_return_centroids(v, dataset))
             let max_score = centroids_and_scores[0].score
             centroids_and_scores.reduce((acc, cur) => {
                 cur.value = cur.value / max_score
-                console.log(acc)
                 return acc.concat(cur)
-            },[])
-            console.log(centroids_and_scores)
-            return centroids_and_scores[3].centroids
+            }, [])
+            return return_best_centroids(centroids_and_scores) //centroids_and_scores[3].centroids
         }
 
         const generate_playlist = (dataset, centroids) => {
@@ -234,8 +230,8 @@
                 centroids = ajust_centroids(labeled_dataset)
             } while (is_centroid_movement_small_enough(centroids, old_centroids) == false)
             let wss = calculate_wss(centroids, labeled_dataset)
-            
-            return {centroids: centroids, score: wss}
+
+            return { centroids: centroids, score: wss }
         }
 
         const calculate_wss = (centroids, labeled_dataset) => {
@@ -243,7 +239,7 @@
             centroids.forEach(element => {
                 centroid_map[element['label']] = element
             });
-            return labeled_dataset.reduce((acc, val) => acc + powered_distance(val, centroid_map[val['label']])['score'],0)
+            return labeled_dataset.reduce((acc, val) => acc + powered_distance(val, centroid_map[val['label']])['score'], 0)
         }
 
         const generate_centroids = (n) => Array.from(Array(n).keys()).reduce((acc, val) => acc.concat({ valence: Math.random(), liveness: Math.random(), label: val, id: 'dummy' }), [])
@@ -289,6 +285,46 @@
             }
             return small
         }
+
+        const return_best_centroids = (elbow_points) => {
+
+            points = elbow_points.map((val, index) => {
+                return { x: index, y: val.score, label: index }
+            })
+
+            translated_points = points.map(val => {
+                tx = val.x - ponts.at(-1).x
+                ty = val.y - ponts.at(-1).y
+                return { x: tx, y: ty, label: val.label }
+            })
+
+            h = Math.sqrt(Math.pow(translated_points.at(0).x - translated_points.at(-1).x, 2) + Math.pow(translated_points.at(0).y - translated_points.at(-1).y, 2))
+            a = translated_points.at(-1).x - translated_points.at(0).x
+            o = translated_points.at(0).y - translated_points.at(1).y
+            s = o/h
+            c = a/h
+
+            rotated_points = translated_points.map(val => {
+                return {
+                    x: (- c * val.x) - (-s * val.y),
+                    y: (- s * val.x) + (-c * val.y),
+                    label: val.label
+                }
+            })
+            best_centroid = {centroids: [], score: 0}
+            rotated_points.forEach(element => {
+                if(element.y > best_centroid.score){
+                    best_centroid = {
+                        centroids: elbow_points[element.label].centroids,
+                        score: element.y
+                    }
+                }
+            });
+            return best_centroid.centroids
+
+        }
+
+
     </script>
 </body>
 
