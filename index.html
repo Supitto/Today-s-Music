@@ -137,14 +137,16 @@
         async function fun() {
             
             dirty_dataset = await fetch("https://todays-music.s3.sa-east-1.amazonaws.com/latest.json").then(r => r.json())
-            
+            console.log(dirty_dataset)
             not_null = dirty_dataset.filter(val => val != null)
+            console.log(not_null)
             mapped_dataset = {}
             not_null.forEach(element => {
                 mapped_dataset[element['id']] = element
             });
-            
-            document.dataset = Object.keys(not_null).map(v => mapped_dataset[v])
+            console.log(mapped_dataset)
+
+            document.dataset = Object.keys(mapped_dataset).map(v => mapped_dataset[v])
             
             document.querySelector("#fun").style.display = "";
         }
