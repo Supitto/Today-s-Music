@@ -293,8 +293,8 @@
             })
 
             translated_points = points.map(val => {
-                tx = val.x - ponts.at(-1).x
-                ty = val.y - ponts.at(-1).y
+                tx = val.x - points.at(-1).x
+                ty = val.y - points.at(-1).y
                 return { x: tx, y: ty, label: val.label }
             })
 
